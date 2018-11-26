@@ -3,7 +3,6 @@ const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === "development";
 const config = {
@@ -85,6 +84,10 @@ if(isDev){
     );
 }
 else{
+    config.entry = {
+        app:path.resolve(__dirname,'src/index.js'),
+        vender:['vue']
+    }
     config.output.filename = '[name].[chunkhash].js'
     config.module.rules.push(
         {
@@ -105,8 +108,14 @@ else{
         }
     )
     config.plugins.push(
-        new ExtractTextPlugin('styles.[hash:8].css')
+        new ExtractTextPlugin('styles.[chunkhash:8].css'),
     )
+    config.optimization={
+        splitChunks:{
+            name:'vender'
+        }
+    }
+    
 }
 
 module.exports = config;
