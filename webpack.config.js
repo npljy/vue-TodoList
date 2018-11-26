@@ -2,14 +2,16 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === "development";
 const config = {
     target:"web",
-    mode:'development',
+    mode:isDev?'development':'production',
     entry:path.resolve(__dirname,'src/index.js'),
     output:{
-        filename:'bundle.js',
+        filename:'bundle.[hash:8].js',
         path:path.resolve(__dirname,'dist')
     },
     module:{
@@ -23,26 +25,6 @@ const config = {
             {
                 test:/\.vue$/,
                 loader:'vue-loader'
-            },
-            {
-                //template中的css样式报错
-                test: /\.css$/,
-                loader: 'style-loader!css-loader!postcss-loader!stylus-loader'
-            },
-            {
-                // 不能写$结束，因为两件有两种后缀 .styl 和 .stylus
-                test:/\.styl/,
-                use:[
-                    'style-loader',
-                    'css-loader',
-                    {
-                        loader:'postcss-loader',
-                        options:{
-                            sourceMap:true
-                        }
-                    },
-                    'stylus-loader'
-                ]
             },
             {
                 test:/\.(jpg|gif|jpeg|png|svg)$/i,
@@ -70,6 +52,23 @@ const config = {
 }
 
 if(isDev){
+    config.module.rules.push(
+        {
+            // 不能写$结束，因为两件有两种后缀 .styl 和 .stylus
+            test:/\.styl/,
+            use:[
+                'style-loader',
+                'css-loader',
+                {
+                    loader:'postcss-loader',
+                    options:{
+                        sourceMap:true
+                    }
+                },
+                'stylus-loader'
+            ]
+        } 
+    )
     config.devtool="#cheap-module-eval-source-map";
     config.devServer = {
         port:8000,
@@ -84,6 +83,30 @@ if(isDev){
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
     );
+}
+else{
+    config.output.filename = '[name].[chunkhash].js'
+    config.module.rules.push(
+        {
+            test:/\.styl/,
+            use:ExtractTextPlugin.extract({
+                fallback:'style-loader',
+                use:[
+                    'css-loader',
+                    {
+                        loader:'postcss-loader',
+                        options:{
+                            sourceMap:true
+                        }
+                    },
+                    'stylus-loader'
+                ]
+            })
+        }
+    )
+    config.plugins.push(
+        new ExtractTextPlugin('styles.[hash:8].css')
+    )
 }
 
 module.exports = config;
