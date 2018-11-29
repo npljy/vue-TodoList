@@ -59,7 +59,7 @@ if(isDev){
 else{
     config = merge(baseConfig,{
         entry :{
-            app:path.resolve(__dirname,'../src/index.js'),
+            app:path.resolve(__dirname,'../client/index.js'),
             vender:['vue']
         },
         output:{

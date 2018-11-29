@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === "development";
 const config = {
     target:"web",
     mode:isDev?'development':'production',
-    entry:path.resolve(__dirname,'../src/index.js'),
+    entry:path.resolve(__dirname,'../client/index.js'),
     output:{
         filename:'bundle.[hash:8].js',
         path:path.resolve(__dirname,'../dist')
