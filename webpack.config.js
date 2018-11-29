@@ -115,7 +115,6 @@ else{
             name:'vender'
         }
     }
-    
 }
 
 module.exports = config;
