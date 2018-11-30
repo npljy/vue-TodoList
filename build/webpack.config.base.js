@@ -1,6 +1,6 @@
 
 const path = require('path')
-const webpack = require('webpack');
+const createVueLoaderOptions = require('./vue-loader.config.js')
 const isDev = process.env.NODE_ENV === "development";
 const config = {
     target:"web",
@@ -23,7 +23,8 @@ const config = {
             },
             {
                 test:/\.vue$/,
-                loader:'vue-loader'
+                loader:'vue-loader',
+                options:createVueLoaderOptions(isDev),
             },
             {
                 test:/\.(jpg|gif|jpeg|png|svg)$/i,

@@ -35,7 +35,7 @@ if(isDev){
                     // 不能写$结束，因为两件有两种后缀 .styl 和 .stylus
                     test:/\.styl/,
                     use:[
-                        'style-loader',
+                        'vue-style-loader',
                         'css-loader',
                         {
                             loader:'postcss-loader',
